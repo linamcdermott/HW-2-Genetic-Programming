@@ -7,6 +7,7 @@ public class TestTree {
 		Tree t = TreeMaker.makeFullTree(3);
 		t.evaluateTree(t.root);
 		System.out.println(t.expression);
+		t.printTree(t.root);
 	}
 
 }

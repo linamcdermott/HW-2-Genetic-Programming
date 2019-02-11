@@ -4,10 +4,12 @@ public class Node {
 	
 	Node left;
 	Node right;
+	Node parent;
 	
 	private NodeType nodeType;
 	private int value;
 	private Operator operator;
+	private char variable;
 	
 	/**public void setLeft(Node child) {
 		left = child;
@@ -16,6 +18,8 @@ public class Node {
 	public void setRight(Node child) {
 		right = child;
 	}**/
+	
+	
 	public Node(int value) {
 		left = null;
 		right = null;
@@ -28,7 +32,7 @@ public class Node {
 		
 		left = null;
 		right = null;
-		
+		this.variable = variable;
 		nodeType = NodeType.VARIABLE;
 	}
 	
@@ -60,5 +64,21 @@ public class Node {
 			}
 		}
 		return str;
+		
+	}
+	
+	public void print() {
+		print("", true);
+	}
+	
+	private void print(String prefix, boolean isTail) {
+		System.out.println(prefix + (isTail ? "└── " : "├── ") + this.toString());
+        
+        if (this.left != null) {
+        	this.left.print(prefix + (isTail ? "    " : "│   "), false);
+        }
+        if (this.right != null) {
+        	this.right.print(prefix + (isTail ?"    " : "│   "), true);
+        }
 	}
 }
