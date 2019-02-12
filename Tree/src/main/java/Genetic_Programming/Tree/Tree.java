@@ -14,7 +14,7 @@ public class Tree {
     	
     	public Node left;
     	public Node right;
-    	
+     // public Node parent;
     	public String value;
     	
     }
@@ -153,8 +153,11 @@ public class Tree {
 		else if (op.equals("+")) {
 			return num1 + num2;
 		}
-		else {
+		else if (op.equals("-")){
 			return num1 - num2;
+		}
+		else {
+			return 0;
 		}
 	}
 	
@@ -172,6 +175,21 @@ public class Tree {
 		System.out.print(currentRoot.value);
 		System.out.print(" ");
 		printExpression(currentRoot.right);
+	}
+	
+	public void print() {
+		print(root, "", true);
+	}
+	
+	private void print(Node currentRoot, String prefix, boolean isTail) {
+		System.out.println(prefix + (isTail ? "└── " : "├── ") + currentRoot.value.toString());
+        
+        if (currentRoot.left != null) {
+        	print(currentRoot.left, prefix + (isTail ? "    " : "│   "), false);
+        }
+        if (currentRoot.right != null) {
+        	print(currentRoot.right, prefix + (isTail ?"    " : "│   "), true);
+        }
 	}
 	
 }
