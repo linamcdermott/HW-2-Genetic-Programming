@@ -4,9 +4,14 @@ public class TestTree {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Tree t = TreeMaker.makeFullTree(3);
-		t.evaluateTree(t.root);
-		System.out.println(t.expression);
+		Tree t = new Tree(3);
+		t.printExpression(t.root);
+		System.out.println("");
+		Tree clone = t.clone();
+		System.out.println("Printing clone: ");
+		clone.printExpression(clone.root);
+		System.out.println("");
+		System.out.println(t.evaluateTree(3, t.root));
 	}
 
 }
