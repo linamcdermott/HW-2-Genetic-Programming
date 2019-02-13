@@ -14,8 +14,10 @@ public class TestTree {
 		System.out.println(t.evaluateTree(3, t.root));
 		
 		t.BFS(t.root, 2);
-		
 		t.print();
+		System.out.println("Random Node is: " + t.randomNode().value.toString());
+		
+
 	}
 
 }

@@ -32,9 +32,32 @@ public class Tree {
 		}
 	}
 	
+	public Node randomNode() {
+		Random randomNum = new Random();
+		int nodePosition = randomNum.nextInt(this.nodesCounter(root)) + 1;
+		System.out.println("Node Pos: " + nodePosition);
+		
+		return BFS(root, nodePosition);
+	}
+	
+	private int nodesCounter(Node root) {
+		int counter = 1;
+		if (root.left != null) {
+			counter += nodesCounter(root.left);
+		}
+		
+		if (root.right != null) {
+			counter += nodesCounter(root.right);
+		}
+		
+		return counter;
+	}
+
+	
 	// Use Breadth-first Search to look for a node at position n
+	// Eventually,change it to private 
 	public Node BFS(Node startNode, int goalNode) {
-		int nodeCounter = 0;
+		int nodeCounter = 1;
 
 		if (nodeCounter == goalNode) {
 			System.out.println("Goal Node Found: " + startNode.value.toString());
@@ -49,13 +72,15 @@ public class Tree {
 		while (!queue.isEmpty()) {
 			Node current = queue.remove();
 			if (goalNode == nodeCounter) {
-				System.out.println("Goal Node Found: " + current.value.toString());
+//				System.out.println("Goal Node Found: " + current.value.toString());
+//				System.out.println("NodeCounter:" + nodeCounter);
 				return current;
 			} else {
-				if (current.getChildren().isEmpty()) {
-					return null;
-				} else {
-					queue.addAll(current.getChildren());
+				if (current.left != null) {
+		            queue.add(current.left);
+            	}
+				if (current.right != null) {
+		            queue.add(current.right);
 				}
 			}
 			explored.add(current);
@@ -64,7 +89,9 @@ public class Tree {
 
 		return null;
 	}
-
+	
+	
+	// TODO? - YJ
 	// An auxiliary function which allows
 	// us to remove any child nodes from
 	// our list of child nodes.
@@ -91,6 +118,7 @@ public class Tree {
 			root.right = null;
 			double probablity = Math.random();
 			// About half of the time, leaf node should be a variable
+			// TODO?: change this to 0.67? People say 50% is too high variables  
 			if (probablity > 0.5) {
 				root.value = "x";
 			}
