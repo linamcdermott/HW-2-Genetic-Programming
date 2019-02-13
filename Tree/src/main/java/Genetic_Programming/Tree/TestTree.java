@@ -12,6 +12,9 @@ public class TestTree {
 		clone.printExpression(clone.root);
 		System.out.println("");
 		System.out.println(t.evaluateTree(3, t.root));
+		
+		t.BFS(t.root, 2);
+		
 		t.print();
 	}
 
