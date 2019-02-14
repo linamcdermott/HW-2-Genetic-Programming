@@ -6,18 +6,23 @@ import java.util.Queue;
 import java.util.Random;
 
 public class Tree {
-
+	
 	Node root;
 	String expression = "";
 	private Random random = new Random();
 	private static String[] operators = { "+", "-", "/", "*" };
+	
+	// Data structure to store current population and all trees ever existed
+	ArrayList<Tree> currentForest = new ArrayList<Tree>(100);
+	ArrayList<ArrayList<Tree>> allForests = new ArrayList<ArrayList<Tree>>();
 
 	/** Basic node class. The value can be a variable, number, or operator. **/
 	public static class Node {
 
 		public Node left;
 		public Node right;
-		// public Node parent;
+		public Node parent;
+		public boolean isLeft;
 		public String value;
 
 		public ArrayList<Node> getChildren() {
@@ -32,6 +37,7 @@ public class Tree {
 		}
 	}
 	
+	// Return a random node to be mutated or cross over
 	public Node randomNode() {
 		Random randomNum = new Random();
 		int nodePosition = randomNum.nextInt(this.nodesCounter(root)) + 1;
@@ -40,14 +46,15 @@ public class Tree {
 		return BFS(root, nodePosition);
 	}
 	
-	private int nodesCounter(Node root) {
+	// This is slow, search the tree twice
+	private int nodesCounter(Node currentRoot) {
 		int counter = 1;
-		if (root.left != null) {
-			counter += nodesCounter(root.left);
+		if (currentRoot.left != null) {
+			counter += nodesCounter(currentRoot.left);
 		}
 		
-		if (root.right != null) {
-			counter += nodesCounter(root.right);
+		if (currentRoot.right != null) {
+			counter += nodesCounter(currentRoot.right);
 		}
 		
 		return counter;
@@ -91,6 +98,7 @@ public class Tree {
 	}
 	
 	
+	
 	// TODO? - YJ
 	// An auxiliary function which allows
 	// us to remove any child nodes from
@@ -106,7 +114,9 @@ public class Tree {
 	}
 
 	/**
-	 * Constructs a random tree of a given depth.
+	 * YJ: Full Grow: Constructs a random tree of a given depth.
+	 * 
+	 * TODO: Decide whether to build the subtree on a node
 	 * 
 	 * @param depth the depth of the tree to be created.
 	 */
@@ -118,16 +128,18 @@ public class Tree {
 			root.right = null;
 			double probablity = Math.random();
 			// About half of the time, leaf node should be a variable
-			// TODO?: change this to 0.67? People say 50% is too high variables  
+			
+			// TODO?: change this to 0.67? People say 50% variables is too much
 			if (probablity > 0.5) {
 				root.value = "x";
 			}
 			// Other half of the time, leaf node should be an integer
 			else {
-				root.value = Integer.toString(random.nextInt(100));
+				root.value = Integer.toString(random.nextInt(5)); // YJ: +/-5 for dataset1
 			}
 		}
 		// If we're at an internal node
+		// Full tree is okay
 		else {
 			root.value = operators[random.nextInt(operators.length)];
 			root.left = new Tree(depth - 1).root;
@@ -174,14 +186,26 @@ public class Tree {
 	}
 
 	// TODO: implement
-	public Tree crossover(Tree t1) {
+	// Want to pick trees with high fitness
+	public Tree crossover(Tree t2) {
 		// should use a COPY of the original tree (don't mutate the originals)
+		Tree t1Copy = this.clone();
+		Tree t2Copy = t2.clone();
+		
+		Node t1Node = this.randomNode();
+		Node t2Node = t2.randomNode();
+		Node temp = t2Node;
+		
+		if(t1Node.left)
 		return null;
 	}
 
 	// TODO: implement
-	public Tree mutate() {
+	// Want to pick trees with high fitness
+	public Tree mutate(Tree t1) {
 		// should return a mutated COPY
+		Node t1Node = t1.randomNode();
+		
 		return null;
 	}
 
@@ -276,5 +300,13 @@ public class Tree {
 			print(currentRoot.right, prefix + (isTail ? "    " : "│   "), true);
 		}
 	}
+	
+	// TODO:
+	// How to evaluate complexity score
+	// 1. how many nodes in a tree
+	//
+	// how to evaluate final function, do both
+	// 1. set limit on the number of generations, and return the function with the best score
+	// 2. converge: keep running until a function is good enough
 
 }

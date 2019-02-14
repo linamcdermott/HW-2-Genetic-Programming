@@ -38,10 +38,10 @@ public class parser{
 		// Parser Dataset2
 		BufferedReader br2 = new BufferedReader(new FileReader("dataset2.csv")); 
 		String line2 = br2.readLine(); // Reading header, Ignoring 
-		ArrayList<Double> data = new ArrayList<Double>(3);
 		
 		while ((line2 = br2.readLine()) != null && !line2.isEmpty()) {
 			String[] fields = line2.split(","); 
+			ArrayList<Double> data = new ArrayList<Double>(3);
 			
 			Double x1 = Double.valueOf(fields[0]); 
 			Double x2 = Double.valueOf(fields[1]); 
@@ -73,5 +73,19 @@ public class parser{
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		csvParser();
 		System.out.println(dataset1.size());
+		System.out.println(dataset2.size());
+		System.out.println(dataset3.size());
+		
+		// ArrayList as key is found in databset2
+		ArrayList<Double> data = new ArrayList<Double>(3);
+		
+		data.add(0, (double) 9609691);
+		data.add(1, (double) 2256113);
+		data.add(2, (double) 3.2);
+		
+		System.out.println(data);
+		System.out.println(dataset2.get(data));
+		System.out.println(dataset2.containsValue(141.56));
+		System.out.println(dataset2.containsKey(data));
 	}
 }
