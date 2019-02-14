@@ -1,9 +1,15 @@
 package Genetic_Programming.Tree;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Stack;
+
+import org.apache.commons.csv.CSVParser;
 
 public class Tree {
 	
@@ -38,15 +44,77 @@ public class Tree {
 	}
 	
 	// Return a random node to be mutated or cross over
+	public Node randomInternal() {
+		Random randomNum = new Random();
+		int nodePosition = randomNum.nextInt(this.nodesCounter(root)) + 1;
+		System.out.println("Node Pos: " + nodePosition);
+		
+		return internalDFS(root, nodePosition);
+	}
+	
+	
+	// This is slow, search the tree twice
+	//Returns number of nodes excluding leaf nodes
+	private int internalCounter(Node currentRoot) {
+		int counter = 1;
+		if (currentRoot.left.left != null) {
+			counter += nodesCounter(currentRoot.left);
+		}
+		
+		if (currentRoot.right.left != null) {
+			counter += nodesCounter(currentRoot.right);
+		}
+		
+		return counter;
+	}
+
+	// Use Breadth-first Search to look for a node at position n
+	// Eventually,change it to private 
+	public Node internalDFS(Node startNode, int goalNode) {
+		int nodeCounter = 1;
+
+		if (nodeCounter == goalNode) {
+			System.out.println("Goal Node Found: " + startNode.value.toString());
+			return startNode;
+		}
+
+		Stack<Node> stack = new Stack<>();
+		ArrayList<Node> explored = new ArrayList<>();
+		stack.add(startNode);
+		explored.add(startNode);
+
+		while (!stack.isEmpty()) {
+			Node current = stack.pop();
+			if (goalNode == nodeCounter) {
+//				System.out.println("Goal Node Found: " + current.value.toString());
+//				System.out.println("NodeCounter:" + nodeCounter);
+				return current;
+			} else {
+				if (current.left.left != null) {
+		            stack.add(current.left);
+            	}
+				if (current.right.left != null) {
+		            stack.add(current.right);
+				}
+			}
+			explored.add(current);
+			nodeCounter++;
+		}
+
+		return null;
+	}
+	
 	public Node randomNode() {
 		Random randomNum = new Random();
 		int nodePosition = randomNum.nextInt(this.nodesCounter(root)) + 1;
 		System.out.println("Node Pos: " + nodePosition);
 		
-		return BFS(root, nodePosition);
+		return DFS(root, nodePosition);
 	}
 	
+	
 	// This is slow, search the tree twice
+	//Returns number of nodes excluding leaf nodes
 	private int nodesCounter(Node currentRoot) {
 		int counter = 1;
 		if (currentRoot.left != null) {
@@ -60,10 +128,9 @@ public class Tree {
 		return counter;
 	}
 
-	
 	// Use Breadth-first Search to look for a node at position n
 	// Eventually,change it to private 
-	public Node BFS(Node startNode, int goalNode) {
+	public Node DFS(Node startNode, int goalNode) {
 		int nodeCounter = 1;
 
 		if (nodeCounter == goalNode) {
@@ -71,23 +138,23 @@ public class Tree {
 			return startNode;
 		}
 
-		Queue<Node> queue = new LinkedList<>();
+		Stack<Node> stack = new Stack<>();
 		ArrayList<Node> explored = new ArrayList<>();
-		queue.add(startNode);
+		stack.add(startNode);
 		explored.add(startNode);
 
-		while (!queue.isEmpty()) {
-			Node current = queue.remove();
+		while (!stack.isEmpty()) {
+			Node current = stack.pop();
 			if (goalNode == nodeCounter) {
 //				System.out.println("Goal Node Found: " + current.value.toString());
 //				System.out.println("NodeCounter:" + nodeCounter);
 				return current;
 			} else {
 				if (current.left != null) {
-		            queue.add(current.left);
+		            stack.add(current.left);
             	}
 				if (current.right != null) {
-		            queue.add(current.right);
+		            stack.add(current.right);
 				}
 			}
 			explored.add(current);
@@ -96,8 +163,6 @@ public class Tree {
 
 		return null;
 	}
-	
-	
 	
 	// TODO? - YJ
 	// An auxiliary function which allows
@@ -129,8 +194,7 @@ public class Tree {
 			double probablity = Math.random();
 			// About half of the time, leaf node should be a variable
 			
-			// TODO?: change this to 0.67? People say 50% variables is too much
-			if (probablity > 0.5) {
+			if (probablity > 0.67) {
 				root.value = "x";
 			}
 			// Other half of the time, leaf node should be an integer
@@ -192,21 +256,50 @@ public class Tree {
 		Tree t1Copy = this.clone();
 		Tree t2Copy = t2.clone();
 		
-		Node t1Node = this.randomNode();
-		Node t2Node = t2.randomNode();
-		Node temp = t2Node;
+		Node t1Node = t1Copy.randomInternal();
+		Node t2Node = t2Copy.randomInternal();
 		
-		if(t1Node.left)
-		return null;
+		if (random.nextBoolean()) {
+			t1Node.left = t2Node;
+		}
+		else {
+			t1Node.right = t2Node;
+		}
+		
+		return t1Copy;
 	}
 
 	// TODO: implement
 	// Want to pick trees with high fitness
-	public Tree mutate(Tree t1) {
+	public Tree mutate() {
 		// should return a mutated COPY
-		Node t1Node = t1.randomNode();
-		
-		return null;
+		Tree copy = this.clone();
+		Node randNode = copy.randomNode();
+		if (randNode.left == null) {
+			double probability = Math.random();
+			if (probability > 0.67) {
+				randNode.value = "x";
+			}
+			// Other half of the time, leaf node should be an integer
+			else {
+				randNode.value = Integer.toString(random.nextInt(5)); // YJ: +/-5 for dataset1
+			}
+		}
+		else {
+			randNode.value = operators[random.nextInt(operators.length)];
+		}
+		return copy;
+	}
+	
+	public double calculateFitness() throws FileNotFoundException, IOException {
+		parser.csvParser();
+		HashMap<Double, Double> dataset = parser.dataset1;
+		double fitness = 0;
+		for (Double key: dataset.keySet()) {
+			double treeVal = this.evaluateTree(key, root);
+			fitness += Math.pow((dataset.get(key) - treeVal), 2);
+		}
+		return Math.sqrt(fitness);
 	}
 
 	/**
@@ -215,7 +308,7 @@ public class Tree {
 	 * 
 	 * @param x the value x for which the expression should be evaluated.
 	 */
-	public double evaluateTree(int x, Node currentNode) {
+	public double evaluateTree(double x, Node currentNode) {
 		if (currentNode.left == null) {
 			if (currentNode.value.equals("x")) {
 				return x;
@@ -237,7 +330,7 @@ public class Tree {
 	 * @param right the right side of the expression.
 	 * @return the value calculated by the input expression.
 	 */
-	private double evaluateExpression(int x, String op, String left, String right) {
+	private double evaluateExpression(double x, String op, String left, String right) {
 		double num1;
 		double num2;
 		// Check if either of the nodes are "x"; if so, substitute x-value.

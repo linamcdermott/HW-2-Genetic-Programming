@@ -13,10 +13,19 @@ public class TestTree {
 		System.out.println("");
 		System.out.println(t.evaluateTree(3, t.root));
 		
-		t.BFS(t.root, 2);
+		t.DFS(t.root, 2);
 		t.print();
-		System.out.println("Random Node is: " + t.randomNode().value.toString());
+		//System.out.println("Random Node is: " + t.randomNode().value.toString());
 		
+		Tree t2 = new Tree(3);
+		
+		t2.print();
+		
+		Tree cross = t.crossover(t2);
+		cross.print();
+		
+		Tree cross2 = cross.crossover(t2);
+		cross2.print();
 
 	}
 
