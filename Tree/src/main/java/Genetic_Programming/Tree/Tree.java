@@ -4,12 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
-
-import org.apache.commons.csv.CSVParser;
+import java.util.*;
 
 public class Tree {
 	
@@ -17,10 +14,6 @@ public class Tree {
 	String expression = "";
 	private Random random = new Random();
 	private static String[] operators = { "+", "-", "/", "*" };
-	
-	// Data structure to store current population and all trees ever existed
-	ArrayList<Tree> currentForest = new ArrayList<Tree>(100);
-	ArrayList<ArrayList<Tree>> allForests = new ArrayList<ArrayList<Tree>>();
 
 	/** Basic node class. The value can be a variable, number, or operator. **/
 	public static class Node {
@@ -31,6 +24,7 @@ public class Tree {
 		public boolean isLeft;
 		public String value;
 
+		// Has not used this yet
 		public ArrayList<Node> getChildren() {
 			ArrayList<Node> childNodes = new ArrayList<>();
 			if (this.left != null) {
@@ -46,7 +40,7 @@ public class Tree {
 	// Return a random node to be mutated or cross over
 	public Node randomInternal() {
 		Random randomNum = new Random();
-		int nodePosition = randomNum.nextInt(this.nodesCounter(root)) + 1;
+		int nodePosition = randomNum.nextInt(this.internalCounter(root)) + 1;
 		System.out.println("Node Pos: " + nodePosition);
 		
 		return internalDFS(root, nodePosition);
@@ -58,11 +52,11 @@ public class Tree {
 	private int internalCounter(Node currentRoot) {
 		int counter = 1;
 		if (currentRoot.left.left != null) {
-			counter += nodesCounter(currentRoot.left);
+			counter += internalCounter(currentRoot.left);
 		}
 		
 		if (currentRoot.right.left != null) {
-			counter += nodesCounter(currentRoot.right);
+			counter += internalCounter(currentRoot.right);
 		}
 		
 		return counter;
@@ -86,7 +80,7 @@ public class Tree {
 		while (!stack.isEmpty()) {
 			Node current = stack.pop();
 			if (goalNode == nodeCounter) {
-//				System.out.println("Goal Node Found: " + current.value.toString());
+				System.out.println("Goal Node Found: " + current.value.toString());
 //				System.out.println("NodeCounter:" + nodeCounter);
 				return current;
 			} else {
@@ -146,7 +140,7 @@ public class Tree {
 		while (!stack.isEmpty()) {
 			Node current = stack.pop();
 			if (goalNode == nodeCounter) {
-//				System.out.println("Goal Node Found: " + current.value.toString());
+				System.out.println("Goal Node Found: " + current.value.toString());
 //				System.out.println("NodeCounter:" + nodeCounter);
 				return current;
 			} else {
@@ -164,15 +158,6 @@ public class Tree {
 		return null;
 	}
 	
-	// TODO? - YJ
-	// An auxiliary function which allows
-	// us to remove any child nodes from
-	// our list of child nodes.
-	public boolean removeChild(Node n) {
-		return false;
-	}
-
-	// Do we need this? is Tree (int depth) enough?
 	/** Basic constructor for a tree. **/
 	public Tree() {
 		root = null;
@@ -180,7 +165,6 @@ public class Tree {
 
 	/**
 	 * YJ: Full Grow: Constructs a random tree of a given depth.
-	 * 
 	 * TODO: Decide whether to build the subtree on a node
 	 * 
 	 * @param depth the depth of the tree to be created.
@@ -269,31 +253,30 @@ public class Tree {
 		return t1Copy;
 	}
 
-	// TODO: implement
 	// Want to pick trees with high fitness
 	public Tree mutate() {
 		// should return a mutated COPY
 		Tree copy = this.clone();
 		Node randNode = copy.randomNode();
 		if (randNode.left == null) {
+			randNode.value = operators[random.nextInt(operators.length)];
+		}
+		else { // Other half of the time, it is an internal node
 			double probability = Math.random();
 			if (probability > 0.67) {
 				randNode.value = "x";
 			}
-			// Other half of the time, leaf node should be an integer
 			else {
-				randNode.value = Integer.toString(random.nextInt(5)); // YJ: +/-5 for dataset1
+				randNode.value = Integer.toString(random.nextInt(5));
 			}
-		}
-		else {
-			randNode.value = operators[random.nextInt(operators.length)];
 		}
 		return copy;
 	}
 	
+	// Returns the root-mean-squared error
 	public double calculateFitness() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<Double, Double> dataset = parser.dataset1;
+		HashMap<Double, Double> dataset = parser.dataset1; // Dataset1
 		double fitness = 0;
 		for (Double key: dataset.keySet()) {
 			double treeVal = this.evaluateTree(key, root);
@@ -397,7 +380,6 @@ public class Tree {
 	// TODO:
 	// How to evaluate complexity score
 	// 1. how many nodes in a tree
-	//
 	// how to evaluate final function, do both
 	// 1. set limit on the number of generations, and return the function with the best score
 	// 2. converge: keep running until a function is good enough
