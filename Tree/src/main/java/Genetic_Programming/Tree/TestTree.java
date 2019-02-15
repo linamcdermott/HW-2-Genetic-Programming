@@ -44,7 +44,7 @@ public class TestTree {
 			scoredForest.put(tree, treeFitness);
 		}
 		
-		Map<Tree, Double> scoredForest1 = sortByValue(scoredForest); 
+		//Map<Tree, Double> scoredForest1 = sortByValue(scoredForest); 
 		
 	}
 

@@ -8,10 +8,11 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.*;
 
-public class Tree {
+public class Tree implements Comparable<Tree>{
 	
 	Node root;
 	String expression = "";
+	double fitness;
 	private Random random = new Random();
 	private static String[] operators = { "+", "-", "/", "*" };
 
@@ -161,6 +162,7 @@ public class Tree {
 	/** Basic constructor for a tree. **/
 	public Tree() {
 		root = null;
+		fitness = Math.pow(2, 63);
 	}
 
 	/**
@@ -170,6 +172,7 @@ public class Tree {
 	 * @param depth the depth of the tree to be created.
 	 */
 	public Tree(int depth) {
+		fitness = Math.pow(2, 63);
 		root = new Node();
 		// If we're at a leaf node
 		if (depth == 1) {
@@ -195,6 +198,17 @@ public class Tree {
 		}
 	}
 
+	@Override
+	public int compareTo(Tree t) {
+	    if (this.fitness > t.fitness) {
+	    	return 1;
+	    }
+	    if (this.fitness < t.fitness) {
+	    	return -1;
+	    }
+	    return 0;
+	  }
+	
 	/**
 	 * Uses recursive function to clone a tree. Does not change the original tree.
 	 */
@@ -203,6 +217,7 @@ public class Tree {
 			return null;
 		}
 		Tree clone = new Tree();
+		clone.fitness = this.fitness;
 		Node nodeCopy = new Node();
 
 		String valueCopy = root.value;
