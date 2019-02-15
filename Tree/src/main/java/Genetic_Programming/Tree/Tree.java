@@ -42,7 +42,7 @@ public class Tree implements Comparable<Tree>{
 	public Node randomInternal() {
 		Random randomNum = new Random();
 		int nodePosition = randomNum.nextInt(this.internalCounter(root)) + 1;
-		System.out.println("Node Pos: " + nodePosition);
+		//System.out.println("Node Pos: " + nodePosition);
 		
 		return internalDFS(root, nodePosition);
 	}
@@ -69,7 +69,7 @@ public class Tree implements Comparable<Tree>{
 		int nodeCounter = 1;
 
 		if (nodeCounter == goalNode) {
-			System.out.println("Goal Node Found: " + startNode.value.toString());
+			//System.out.println("Goal Node Found: " + startNode.value.toString());
 			return startNode;
 		}
 
@@ -81,7 +81,7 @@ public class Tree implements Comparable<Tree>{
 		while (!stack.isEmpty()) {
 			Node current = stack.pop();
 			if (goalNode == nodeCounter) {
-				System.out.println("Goal Node Found: " + current.value.toString());
+				//System.out.println("Goal Node Found: " + current.value.toString());
 //				System.out.println("NodeCounter:" + nodeCounter);
 				return current;
 			} else {
@@ -102,7 +102,7 @@ public class Tree implements Comparable<Tree>{
 	public Node randomNode() {
 		Random randomNum = new Random();
 		int nodePosition = randomNum.nextInt(this.nodesCounter(root)) + 1;
-		System.out.println("Node Pos: " + nodePosition);
+		//System.out.println("Node Pos: " + nodePosition);
 		
 		return DFS(root, nodePosition);
 	}
@@ -129,7 +129,7 @@ public class Tree implements Comparable<Tree>{
 		int nodeCounter = 1;
 
 		if (nodeCounter == goalNode) {
-			System.out.println("Goal Node Found: " + startNode.value.toString());
+			//System.out.println("Goal Node Found: " + startNode.value.toString());
 			return startNode;
 		}
 
@@ -141,7 +141,7 @@ public class Tree implements Comparable<Tree>{
 		while (!stack.isEmpty()) {
 			Node current = stack.pop();
 			if (goalNode == nodeCounter) {
-				System.out.println("Goal Node Found: " + current.value.toString());
+				//System.out.println("Goal Node Found: " + current.value.toString());
 //				System.out.println("NodeCounter:" + nodeCounter);
 				return current;
 			} else {
@@ -273,7 +273,7 @@ public class Tree implements Comparable<Tree>{
 		// should return a mutated COPY
 		Tree copy = this.clone();
 		Node randNode = copy.randomNode();
-		if (randNode.left == null) {
+		if (randNode.left != null) {
 			randNode.value = operators[random.nextInt(operators.length)];
 		}
 		else { // Other half of the time, it is an internal node
