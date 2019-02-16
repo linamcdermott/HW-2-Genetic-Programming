@@ -26,12 +26,14 @@ public class GeneticAlgorithm {
 	// Make a sum list for picking trees based on fitness
 	private static ArrayList<Double> makeSumList(ArrayList<Tree> currentPop) {
 		ArrayList<Double> sumList = new ArrayList<Double>();
+		int popSize = currentPop.size();
 		
-		sumList.add(0, currentPop.get(0).fitness);
-		for (int i = 1; i < currentPop.size(); i++) {
-			Double currentElement = sumList.get(i - 1) + currentPop.get(i).fitness;
-			sumList.add(i, currentElement);
+		sumList.add(0, currentPop.get(popSize - 1).fitness);
+		for (int i = popSize - 2; i >= 0; i--) {
+			Double currentElement = sumList.get(popSize - i - 2) + currentPop.get(i).fitness;
+			sumList.add(popSize - i - 1, currentElement);
 		}	
+		
 		return sumList;
 	}
 	
@@ -41,13 +43,13 @@ public class GeneticAlgorithm {
 		double max = sums.get(99);
 		double randDouble = random.nextDouble() * (max - min);
 		int index = 0;
-		for (int i = 0; i < sums.size(); i++) {
+		for (int i = 1; i < sums.size(); i++) {
 			if (sums.get(i) >= randDouble) {
-				index = i;
+				index = i - 1;
 				break;
 			}
 		}
-		return currentPop.get(currentPop.size()-index-1);
+		return currentPop.get(index);
 	}
 	
 	// Pick trees based on complexity
