@@ -13,6 +13,7 @@ public class Tree implements Comparable<Tree>{
 	Node root;
 	String expression = "";
 	double fitness;
+	int complexity;
 	private Random random = new Random();
 	private static String[] operators = { "+", "-", "/", "*" };
 
@@ -101,8 +102,9 @@ public class Tree implements Comparable<Tree>{
 	
 	public Node randomNode() {
 		Random randomNum = new Random();
-		int nodePosition = randomNum.nextInt(this.nodesCounter(root)) + 1;
 		//System.out.println("Node Pos: " + nodePosition);
+		int totalNodes = this.nodesCounter(root);
+		int nodePosition = randomNum.nextInt(totalNodes) + 1;
 		
 		return DFS(root, nodePosition);
 	}
@@ -119,8 +121,12 @@ public class Tree implements Comparable<Tree>{
 		if (currentRoot.right != null) {
 			counter += nodesCounter(currentRoot.right);
 		}
-		
 		return counter;
+	}
+	
+	public int getComplexity() {
+		this.complexity = nodesCounter(root);
+		return this.complexity;
 	}
 
 	// Use Breadth-first Search to look for a node at position n

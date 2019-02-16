@@ -23,6 +23,7 @@ public class GeneticAlgorithm {
 		//System.out.println("First Forest size should be 100: " + currentForest.size());
 	}
 	
+	// Make a sum list for picking trees based on fitness
 	private static ArrayList<Double> makeSumList(ArrayList<Tree> currentPop) {
 		ArrayList<Double> sumList = new ArrayList<Double>();
 		
@@ -49,6 +50,33 @@ public class GeneticAlgorithm {
 		return currentPop.get(currentPop.size()-index-1);
 	}
 	
+	// Pick trees based on complexity
+	private static ArrayList<Tree> complexityFilter(ArrayList<Tree> thisPop){
+		ArrayList<Integer> complexities = new ArrayList<Integer>();
+		
+		for(int i = 0; i < thisPop.size(); i++) {
+			complexities.add(thisPop.get(i).getComplexity());
+		}
+		Collections.sort(complexities);
+		
+		double median = (double) complexities.get(complexities.size()/2);
+		
+		System.out.print("median is: " + median + "\n");
+		ArrayList<Tree> nextPop = new ArrayList<Tree>();
+		
+		for(Tree currentTree : thisPop) {
+			if(currentTree.complexity <= 1.5 * median) {
+				nextPop.add(currentTree);
+				if(nextPop.size() >= 100) {
+					break;
+				}
+			}
+		}
+		System.out.print("Size of nextPop shoulde be 100: " + nextPop.size() + "\n");
+		
+		return nextPop;
+	}
+	
 	public static Tree runGeneticAlgorithm() throws FileNotFoundException, IOException {
 		
 		//ArrayList<PriorityQueue<Tree>> allForests = new ArrayList<PriorityQueue<Tree>>();
@@ -59,7 +87,7 @@ public class GeneticAlgorithm {
 		Tree bestTree = new Tree();
 		
 		while (bestTree.fitness > 1) {
-			ArrayList<Tree> nextPop = new ArrayList<Tree>();
+			ArrayList<Tree> thisPop = new ArrayList<Tree>();
 			Collections.sort(currentPop);
 			//Check best tree of the current population and see if it is the best ever
 			if (currentPop.get(0).fitness < bestTree.fitness) {
@@ -69,8 +97,8 @@ public class GeneticAlgorithm {
 				System.out.println(bestTree.fitness);
 			}
 			//Make next population
-			while (nextPop.size() < 100) {
-				if (nextPop.size() == 100) {
+			while (thisPop.size() < 201) {
+				if (thisPop.size() == 201) {
 					break;
 				}
 				
@@ -83,18 +111,21 @@ public class GeneticAlgorithm {
 					Tree y = getRandomTree(); //This will be changed to a random tree
 					Tree crossover = x.crossover(y);
 					crossover.fitness = crossover.calculateFitness();
-					nextPop.add(x);
-					nextPop.add(crossover);
+					thisPop.add(x);
+					thisPop.add(crossover);
 				}
 				if (probability > 0.5 && probability <= 0.8) {
-					nextPop.add(x);
+					thisPop.add(x);
 				}
 				else {
 					Tree m = x.mutate();
 					m.fitness = m.calculateFitness();
-					nextPop.add(m);
+					thisPop.add(m);
 				}
 			}
+			
+			ArrayList<Tree> nextPop = complexityFilter(thisPop);
+			
 			/**double survivalChance = 0.99;
 			int reproductionSize = 0;
 			ArrayList<Tree> mostFitted = new ArrayList<Tree>();
