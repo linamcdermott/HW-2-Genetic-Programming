@@ -3,21 +3,24 @@ package Genetic_Programming.Tree;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.Random;
 
 public class GeneticAlgorithm {
 
 	private static Random random = new Random();
-	static PriorityQueue<Tree> currentForest = new PriorityQueue<Tree>();
+	static //static PriorityQueue<Tree> currentForest = new PriorityQueue<Tree>();
+	ArrayList<Tree> currentPop = new ArrayList<Tree>();
 	
 	public static void generatePopulation() throws FileNotFoundException, IOException {
 		for (int i = 0; i < 100; i++) {
 			Tree current = new Tree(3);
 			current.fitness = current.calculateFitness();
-			currentForest.add(current);
+			//currentForest.add(current);
+			currentPop.add(current);
 		}
-		System.out.println("First Forest size should be 100: " + currentForest.size());
+		//System.out.println("First Forest size should be 100: " + currentForest.size());
 	}
 	
 	public static Tree runGeneticAlgorithm() throws FileNotFoundException, IOException {
@@ -27,19 +30,42 @@ public class GeneticAlgorithm {
 		generatePopulation();
 		int numIterations = 0;
 		boolean done = false;
+		Tree bestTree = new Tree();
 		
 		while (numIterations < 5 && !done) {
-			PriorityQueue<Tree> nextForest = new PriorityQueue<Tree>();
-			Tree x;
-			Tree y;
-			//need to calculate the generation's tree fitness
-//			for (int i = 0; i < currentForest.size(); i++) {
-//				Tree current = population.get(i);
-//				current.fitness = current.calculateFitness();
-//				currentForest.add(current);
-//			}
-			
-			double survivalChance = 0.99;
+			ArrayList<Tree> nextPop = new ArrayList<Tree>();
+			Collections.sort(currentPop);
+			//Check best tree of the current population and see if it is the best ever
+			if (currentPop.get(0).fitness < bestTree.fitness) {
+				bestTree = currentPop.get(0);
+			}
+			//Make next population
+			while (nextPop.size() < 100) {
+				if (nextPop.size() == 100) {
+					break;
+				}
+				
+				//TODO: implement way to get random tree (random weighted selection)
+				
+				//50% chance of crossover, 30% pass on no mutation, 20% pass on w/ mutation
+				Tree x = new Tree(); //This will be changed to a random tree
+				double probability = Math.random();
+				if (probability <= 0.5) {
+					Tree y = new Tree(); //This will be changed to a random tree
+					Tree crossover = x.crossover(y);
+					crossover.fitness = crossover.calculateFitness();
+					nextPop.add(crossover);
+				}
+				if (probability > 0.5 && probability <= 0.8) {
+					nextPop.add(x);
+				}
+				else {
+					Tree m = x.mutate();
+					m.fitness = m.calculateFitness();
+					nextPop.add(m);
+				}
+			}
+			/**double survivalChance = 0.99;
 			int reproductionSize = 0;
 			ArrayList<Tree> mostFitted = new ArrayList<Tree>();
 			for(int reproduction = 0; reproduction < currentForest.size(); reproduction++) {
@@ -54,6 +80,7 @@ public class GeneticAlgorithm {
 					reproductionSize++;
 				}
 			}
+			
 			int numChildren = 0;
 			int numMutations = 0;
 			while (nextForest.size() < 100) {
@@ -72,21 +99,16 @@ public class GeneticAlgorithm {
 					nextForest.add(mutated);
 					numMutations++;
 				}
-			}
+			}**/
 			//System.out.println("Next Forest size should be 100: " + nextForest.size());
-			System.out.println("Num children: " + numChildren + "; Num Mutations: " + numMutations);
+			//System.out.println("Num children: " + numChildren + "; Num Mutations: " + numMutations);
 			numIterations++;
-			currentForest = nextForest;
+			currentPop = nextPop;
 		}
-		Tree best = currentForest.poll();
-		best.print();
-		best.printExpression(best.root);
-		System.out.println();
-		System.out.println(best.fitness);
 		return null;
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		runGeneticAlgorithm();
+		//runGeneticAlgorithm();
 	}
 }
