@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.PriorityQueue;
 import java.util.Random;
 
 public class GeneticAlgorithm {
@@ -101,20 +100,22 @@ public class GeneticAlgorithm {
 				if (thisPop.size() == 201) {
 					break;
 				}
+								
+				//90% chance of crossover, 10% pass on no mutation, 10% pass on w/ mutation
+				Tree x = getRandomTree(); 
 				
-				//TODO: implement way to get random tree (random weighted selection)
-				
-				//50% chance of crossover, 30% pass on no mutation, 20% pass on w/ mutation
-				Tree x = getRandomTree(); //This will be changed to a random tree
 				double probability = Math.random();
-				if (probability <= 0.5) {
-					Tree y = getRandomTree(); //This will be changed to a random tree
+				if (probability <= 0.8) {
+					Tree y = getRandomTree(); 
 					Tree crossover = x.crossover(y);
+					//thisPop.add(x);
+					if (Math.random() < 0.2) {
+						crossover = crossover.mutate();
+					}
 					crossover.fitness = crossover.calculateFitness();
-					thisPop.add(x);
 					thisPop.add(crossover);
 				}
-				if (probability > 0.5 && probability <= 0.8) {
+				if (probability > 0.8 && probability <= 0.9) {
 					thisPop.add(x);
 				}
 				else {
@@ -177,6 +178,7 @@ public class GeneticAlgorithm {
 		bestTree.printExpression(bestTree.root);
 		System.out.println();
 		System.out.println(bestTree.fitness);
+		System.out.println(numIterations);
 		return bestTree;
 	}
 	

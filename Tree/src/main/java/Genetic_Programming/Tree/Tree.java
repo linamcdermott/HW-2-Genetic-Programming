@@ -192,7 +192,7 @@ public class Tree implements Comparable<Tree>{
 			}
 			// Other half of the time, leaf node should be an integer
 			else {
-				root.value = Integer.toString(random.nextInt(5)); // YJ: +/-5 for dataset1
+				root.value = Integer.toString(random.nextInt(10)); // YJ: +/-5 for dataset1
 			}
 		}
 		// If we're at an internal node
