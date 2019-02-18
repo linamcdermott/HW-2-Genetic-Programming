@@ -303,7 +303,7 @@ public class Tree implements Comparable<Tree>{
 			double treeVal = this.evaluateTree(key, root);
 			fitness += Math.pow((dataset.get(key) - treeVal), 2);
 		}
-		return Math.sqrt(fitness);
+		return Math.sqrt(fitness/(dataset.keySet().size()));
 	}
 
 	/**

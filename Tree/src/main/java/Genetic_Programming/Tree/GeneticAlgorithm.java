@@ -87,7 +87,7 @@ public class GeneticAlgorithm {
 		boolean done = false;
 		Tree bestTree = new Tree();
 		
-		while (bestTree.fitness > 1) {
+		while (bestTree.fitness > 0.05) {
 			ArrayList<Tree> thisPop = new ArrayList<Tree>();
 			Collections.sort(currentPop);
 			//Check best tree of the current population and see if it is the best ever
