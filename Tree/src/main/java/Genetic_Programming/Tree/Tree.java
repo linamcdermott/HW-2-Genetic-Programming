@@ -10,10 +10,13 @@ import java.util.*;
 
 public class Tree implements Comparable<Tree>{
 	
+	//dataset2 max vals
 	public static Double maxX1 = 9999629.0;
 	public static Double maxX2 = 9999545.0;
 	public static Double maxX3 = 10.0;
-	
+	public static Double maxfx = 160629674968.55; 
+	public static Double maxbfx = 1222361.53; // dataset2 f(x) without outliers
+
 	Node root;
 	String expression = "";
 	double fitness;
@@ -24,7 +27,6 @@ public class Tree implements Comparable<Tree>{
 
 	/** Basic node class. The value can be a variable, number, or operator. **/
 	public static class Node {
-
 		public Node left;
 		public Node right;
 		public String value;
@@ -177,11 +179,13 @@ public class Tree implements Comparable<Tree>{
 			// About half of the time, leaf node should be a variable
 			
 			if (probablity > 0.5) {
-				root.value = variables[random.nextInt(variables.length)];
+				// root.value = "x" //for dataset1
+				root.value = variables[random.nextInt(variables.length)]; // ******************choose the dataset ********************
 			}
 			// Other half of the time, leaf node should be an integer
 			else {
-				root.value = Integer.toString(random.nextInt(9) + 1); // YJ: exclude 0
+				// dataset1 integer.toString(random.nextInt(9) + 1)	// ******************choose the dataset ********************
+				root.value = Double.toString(random.nextDouble()); // YJ: exclude 0 & normalized dataset2
 			}
 		}
 		// If we're at an internal node
@@ -277,7 +281,8 @@ public class Tree implements Comparable<Tree>{
 				randNode.value = variables[random.nextInt(variables.length)];
 			}
 			else {
-				randNode.value = Integer.toString(random.nextInt(100));
+				// dataset1 integer.toString(random.nextInt(9) + 1)        // ******************choose the dataset1 ********************
+				randNode.value = Double.toString(random.nextDouble()); // YJ: exclude 0 and normalized dataset2
 			}
 		}
 		return copy;
@@ -300,7 +305,7 @@ public class Tree implements Comparable<Tree>{
 
 	public double calculateFitness2() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2; // Dataset2
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2b; //  ****************choose Dataset2 or Dataset2b ****************
 		double fitness = 0;
 		int count = 0;
 		for (ArrayList<Double> key: dataset.keySet()) {
@@ -309,7 +314,7 @@ public class Tree implements Comparable<Tree>{
 			double x2 = key.get(1)/maxX2;
 			double x3 = key.get(2)/maxX3;
 			double treeVal = this.evaluateTree2(x1, x2, x3, root);
-			fitness += Math.pow((dataset.get(key) - treeVal), 2);
+			fitness += Math.pow((dataset.get(key)/maxbfx - treeVal), 2); // *********************** choose maxfx or maxbfx ************ 
 			count++;
 			//double treeVal = this.evaluateTree(key, root);
 			//fitness += Math.pow((dataset.get(key) - treeVal), 2);
@@ -331,7 +336,7 @@ public class Tree implements Comparable<Tree>{
 	
 	public double testFitness2() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2Test; // Dataset2
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2bTest; // ******************** choose Dataset2Test or Dataset2bTest ********* 
 		double fitness = 0;
 		int count = 0;
 		for (ArrayList<Double> key: dataset.keySet()) {
@@ -339,7 +344,7 @@ public class Tree implements Comparable<Tree>{
 			double x2 = key.get(1)/maxX2;
 			double x3 = key.get(2)/maxX3;
 			double treeVal = this.evaluateTree2(x1, x2, x3, root);
-			fitness += Math.pow((dataset.get(key) - treeVal), 2);
+			fitness += Math.pow((dataset.get(key)/maxbfx - treeVal), 2);
 			count++;
 		}
 		return Math.sqrt(fitness/count);

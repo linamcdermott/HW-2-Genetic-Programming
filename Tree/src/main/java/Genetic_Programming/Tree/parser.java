@@ -15,10 +15,12 @@ public class parser{
 	static HashMap<Double, Double> dataset1Test = new HashMap<Double, Double>(); // testing
 	static HashMap<ArrayList<Double>, Double> dataset2 = new HashMap<ArrayList<Double>, Double>();
 	static HashMap<ArrayList<Double>, Double> dataset2Test = new HashMap<ArrayList<Double>, Double>();
+	// dataset2_rmv_outliers
+	static HashMap<ArrayList<Double>, Double> dataset2b = new HashMap<ArrayList<Double>, Double>();
+	static HashMap<ArrayList<Double>, Double> dataset2bTest = new HashMap<ArrayList<Double>, Double>();
 	static HashMap<Double, Double> dataset3 = new HashMap<Double, Double>();
 	static HashMap<Double, Double> dataset3Test = new HashMap<Double, Double>();
-
-
+	
 	/* 
 	 * Java program to read CVS file using BufferedReader and String split() method 
 	 */ 
@@ -68,6 +70,32 @@ public class parser{
 		} 
 		
 		br2.close(); 
+		
+		// Parser Dataset2_rmv_outliers
+				BufferedReader br2b = new BufferedReader(new FileReader("dataset2_rmv_outliers.csv")); 
+				String line2b = br2b.readLine(); // Reading header, Ignoring 
+				
+				while ((line2b = br2b.readLine()) != null && !line2b.isEmpty()) {
+					String[] fields = line2b.split(","); 
+					ArrayList<Double> data = new ArrayList<Double>(3);
+					
+					Double x1 = Double.valueOf(fields[0]); 
+					Double x2 = Double.valueOf(fields[1]); 
+					Double x3 = Double.valueOf(fields[2]);	
+					Double y = Double.valueOf(fields[3]);
+					data.add(0, x1);
+					data.add(1, x2);
+					data.add(2, x3);
+					// Split dataset2 to training and testing by 80-20 rule
+					if(dataset2b.size() <= 20000) {
+						dataset2b.put(data, y);
+					}
+					else {
+						dataset2bTest.put(data, y);
+					}
+				} 
+				
+				br2b.close(); 
 		
 		// Parser Dataset3
 		BufferedReader br3 = new BufferedReader(new FileReader("dataset3.csv")); 
