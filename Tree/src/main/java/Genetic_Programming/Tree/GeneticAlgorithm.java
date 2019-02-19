@@ -9,17 +9,15 @@ import java.util.Random;
 public class GeneticAlgorithm {
 
 	private static Random random = new Random();
-	//static PriorityQueue<Tree> currentForest = new PriorityQueue<Tree>();
 	static ArrayList<Tree> currentPop = new ArrayList<Tree>();
 	
 	public static void generatePopulation() throws FileNotFoundException, IOException {
 		for (int i = 0; i < 100; i++) {
 			Tree current = new Tree(3);
-			current.fitness = current.calculateFitness();
-			//currentForest.add(current);
+			current.fitness = current.calculateFitness2();
+			System.out.println(current.fitness);
 			currentPop.add(current);
 		}
-		//System.out.println("First Forest size should be 100: " + currentForest.size());
 	}
 	
 	// Make a sum list for picking trees based on fitness
@@ -62,7 +60,7 @@ public class GeneticAlgorithm {
 		
 		double median = (double) complexities.get(complexities.size()/2);
 		
-		System.out.print("median is: " + median + "\n");
+		//System.out.print("median is: " + median + "\n");
 		ArrayList<Tree> nextPop = new ArrayList<Tree>();
 		
 		for(Tree currentTree : thisPop) {
@@ -73,15 +71,13 @@ public class GeneticAlgorithm {
 				}
 			}
 		}
-		System.out.print("Size of nextPop shoulde be 100: " + nextPop.size() + "\n");
+		//System.out.print("Size of nextPop shoulde be 100: " + nextPop.size() + "\n");
 		
 		return nextPop;
 	}
 	
 	public static Tree runGeneticAlgorithm() throws FileNotFoundException, IOException {
-		
-		//ArrayList<PriorityQueue<Tree>> allForests = new ArrayList<PriorityQueue<Tree>>();
-		
+				
 		generatePopulation();
 		int numIterations = 0;
 		boolean done = false;

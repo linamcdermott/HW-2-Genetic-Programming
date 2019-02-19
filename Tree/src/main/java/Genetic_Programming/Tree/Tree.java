@@ -16,6 +16,7 @@ public class Tree implements Comparable<Tree>{
 	int complexity;
 	private Random random = new Random();
 	private static String[] operators = { "+", "-", "/", "*" };
+	private static String[] variables = {"x", "y", "z"};
 
 	/** Basic node class. The value can be a variable, number, or operator. **/
 	public static class Node {
@@ -133,8 +134,6 @@ public class Tree implements Comparable<Tree>{
 		while (!stack.isEmpty()) {
 			Node current = stack.pop();
 			if (goalNode == nodeCounter) {
-				//System.out.println("Goal Node Found: " + current.value.toString());
-//				System.out.println("NodeCounter:" + nodeCounter);
 				return current;
 			} else {
 				if (current.left != null) {
@@ -173,8 +172,8 @@ public class Tree implements Comparable<Tree>{
 			double probablity = Math.random();
 			// About half of the time, leaf node should be a variable
 			
-			if (probablity > 0.67) {
-				root.value = "x";
+			if (probablity > 0.5) {
+				root.value = variables[random.nextInt(variables.length)];
 			}
 			// Other half of the time, leaf node should be an integer
 			else {
@@ -271,10 +270,10 @@ public class Tree implements Comparable<Tree>{
 		else { // Other half of the time, it is an internal node
 			double probability = Math.random();
 			if (probability > 0.67) {
-				randNode.value = "x";
+				randNode.value = variables[random.nextInt(variables.length)];
 			}
 			else {
-				randNode.value = Integer.toString(random.nextInt(5));
+				randNode.value = Integer.toString(random.nextInt(100));
 			}
 		}
 		return copy;
@@ -309,6 +308,23 @@ public class Tree implements Comparable<Tree>{
 		return Math.sqrt(fitness/(dataset.keySet().size()));
 	}
 
+	public double calculateFitness2() throws FileNotFoundException, IOException {
+		parser.csvParser();
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2; // Dataset2
+		double fitness = 0;
+		int count = 0;
+		for (ArrayList<Double> key: dataset.keySet()) {
+			double x = key.get(0);
+			double y = key.get(1);
+			double z = key.get(2);
+			double treeVal = this.evaluateTree2(x, y, z, root);
+			fitness += Math.pow((dataset.get(key) - treeVal), 2);
+			count++;
+			//double treeVal = this.evaluateTree(key, root);
+			//fitness += Math.pow((dataset.get(key) - treeVal), 2);
+		}
+		return Math.sqrt(fitness/count);
+	}
 	/**
 	 * Evaluates the expression represented by the tree for a given value x using a
 	 * post-order traversal.
@@ -325,6 +341,71 @@ public class Tree implements Comparable<Tree>{
 			String op = currentNode.value;
 			return evaluateExpression(x, op, String.valueOf(evaluateTree(x, currentNode.left)),
 					String.valueOf(evaluateTree(x, currentNode.right)));
+		}
+	}
+	
+	public double evaluateTree2(double x, double y, double z, Node currentNode) {
+		if (currentNode.left == null) {
+			if (currentNode.value.equals("x")) {
+				return x;
+			}
+			else if (currentNode.value.equals("y")) {
+				return y;
+			}
+			else if (currentNode.value.equals("z")) {
+				return z;
+			}
+			return Double.parseDouble(currentNode.value);
+		} else {
+			String op = currentNode.value;
+			return evaluateExpression2(x, y, z, op, String.valueOf(evaluateTree2(x, y, z, currentNode.left)),
+					String.valueOf(evaluateTree2(x, y, z, currentNode.right)));
+		}
+	}
+	
+	private double evaluateExpression2(double x, double y, double z, String op, String left, String right) {
+		double num1;
+		double num2;
+		// Check if either of the nodes are "x"; if so, substitute x-value.
+		if (left.equals("x")) {
+			num1 = x;
+		} 
+		else if (left.equals("y")) {
+			num1 = y;
+		}
+		else if (left.equals("z")) {
+			num1 = z;
+		}
+		else {
+			num1 = Double.parseDouble(left);
+		}
+		if (right.equals("x")) {
+			num2 = x;
+		} 
+		else if (right.equals("y")) {
+			num2 = y;
+		}
+		else if (right.equals("z")) {
+			num2 = z;
+		}
+		else {
+			num2 = Double.parseDouble(right);
+		}
+
+		if (op.equals("/")) {
+			// Can't divide by 0.
+			if (num2 == 0) {
+				return 1;
+			}
+			return num1 / num2;
+		} else if (op.equals("*")) {
+			return num1 * num2;
+		} else if (op.equals("+")) {
+			return num1 + num2;
+		} else if (op.equals("-")) {
+			return num1 - num2;
+		} else {
+			return 0;
 		}
 	}
 
