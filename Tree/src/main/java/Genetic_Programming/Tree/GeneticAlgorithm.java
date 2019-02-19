@@ -14,7 +14,7 @@ public class GeneticAlgorithm {
 	public static void generatePopulation() throws FileNotFoundException, IOException {
 		for (int i = 0; i < 100; i++) {
 			Tree current = new Tree(3);
-			current.fitness = current.calculateFitness2();
+			current.fitness = current.calculateFitness2(); // ************* choose the dataset **********
 			System.out.println(current.fitness);
 			currentPop.add(current);
 		}
@@ -71,7 +71,7 @@ public class GeneticAlgorithm {
 				}
 			}
 		}
-		//System.out.print("Size of nextPop shoulde be 100: " + nextPop.size() + "\n");
+		//System.out.print("Size of nextPop should be 100: " + nextPop.size() + "\n");
 		
 		return nextPop;
 	}
@@ -80,7 +80,6 @@ public class GeneticAlgorithm {
 				
 		generatePopulation();
 		int numIterations = 0;
-		boolean done = false;
 		Tree bestTree = new Tree();
 		
 		while (bestTree.fitness > 0.05) {
@@ -110,7 +109,7 @@ public class GeneticAlgorithm {
 					if (Math.random() < 0.2) {
 						crossover = crossover.mutate();
 					}
-					crossover.fitness = crossover.calculateFitness();
+					crossover.fitness = crossover.calculateFitness2(); // ************* choose the dataset **********
 					thisPop.add(crossover);
 				}
 				if (probability > 0.8 && probability <= 0.9) {
@@ -118,7 +117,7 @@ public class GeneticAlgorithm {
 				}
 				else {
 					Tree m = x.mutate();
-					m.fitness = m.calculateFitness();
+					m.fitness = m.calculateFitness2(); // ************* choose the dataset **********
 					thisPop.add(m);
 				}
 			}
@@ -145,8 +144,8 @@ public class GeneticAlgorithm {
 	
 	public static double testGeneticAlgorithm() throws FileNotFoundException, IOException{
 		Tree bestTree = runGeneticAlgorithm();
-		System.out.println("Testing Genetic Algorithm's fitness: " + bestTree.testFitness());
-		return bestTree.testFitness();
+		System.out.println("Testing Genetic Algorithm's fitness: " + bestTree.testFitness2()); // ************* choose the dataset **********
+		return bestTree.testFitness2(); // ************* choose the dataset **********
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {

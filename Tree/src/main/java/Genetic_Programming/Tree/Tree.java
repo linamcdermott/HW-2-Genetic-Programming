@@ -10,6 +10,10 @@ import java.util.*;
 
 public class Tree implements Comparable<Tree>{
 	
+	public static Double maxX1 = 9999629.0;
+	public static Double maxX2 = 9999545.0;
+	public static Double maxX3 = 10.0;
+	
 	Node root;
 	String expression = "";
 	double fitness;
@@ -279,26 +283,12 @@ public class Tree implements Comparable<Tree>{
 		return copy;
 	}
 	
-	// Testing set (20%): Returns the root-mean-squared error
-	public double testFitness() throws FileNotFoundException, IOException {
-		parser.csvParser();
-		HashMap<Double, Double> dataset = parser.dataset1Test; // Dataset1 Test
-		double fitness = 0;
-		for (Double key: dataset.keySet()) {
-			double treeVal = this.evaluateTree(key, root);
-			fitness += Math.pow((dataset.get(key) - treeVal), 2);
-		}
-		return Math.sqrt(fitness/(dataset.keySet().size()));
-	}
-	
 	// Training set (80%): Returns the root-mean-squared error
 	public double calculateFitness() throws FileNotFoundException, IOException {
 		parser.csvParser();
 		
 		HashMap<Double, Double> dataset = parser.dataset1; // Dataset1
-		HashMap<ArrayList<Double>, Double> dataset2 = parser.dataset2; //Dataset2
-		HashMap<Double, Double> dataset3 = parser.dataset3; //Dataset2
-		
+		HashMap<Double, Double> dataset3 = parser.dataset3; //Dataset3
 		
 		double fitness = 0;
 		for (Double key: dataset.keySet()) {
@@ -314,10 +304,11 @@ public class Tree implements Comparable<Tree>{
 		double fitness = 0;
 		int count = 0;
 		for (ArrayList<Double> key: dataset.keySet()) {
-			double x = key.get(0);
-			double y = key.get(1);
-			double z = key.get(2);
-			double treeVal = this.evaluateTree2(x, y, z, root);
+			// Normalize x-values
+			double x1 = key.get(0)/maxX1;
+			double x2 = key.get(1)/maxX2;
+			double x3 = key.get(2)/maxX3;
+			double treeVal = this.evaluateTree2(x1, x2, x3, root);
 			fitness += Math.pow((dataset.get(key) - treeVal), 2);
 			count++;
 			//double treeVal = this.evaluateTree(key, root);
@@ -325,6 +316,35 @@ public class Tree implements Comparable<Tree>{
 		}
 		return Math.sqrt(fitness/count);
 	}
+	
+	// Testing set (20%): Returns the root-mean-squared error
+	public double testFitness() throws FileNotFoundException, IOException {
+		parser.csvParser();
+		HashMap<Double, Double> dataset = parser.dataset1Test; // Dataset1 Test
+		double fitness = 0;
+		for (Double key: dataset.keySet()) {
+			double treeVal = this.evaluateTree(key, root);
+			fitness += Math.pow((dataset.get(key) - treeVal), 2);
+		}
+		return Math.sqrt(fitness/(dataset.keySet().size()));
+	}
+	
+	public double testFitness2() throws FileNotFoundException, IOException {
+		parser.csvParser();
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2Test; // Dataset2
+		double fitness = 0;
+		int count = 0;
+		for (ArrayList<Double> key: dataset.keySet()) {
+			double x1 = key.get(0)/maxX1;
+			double x2 = key.get(1)/maxX2;
+			double x3 = key.get(2)/maxX3;
+			double treeVal = this.evaluateTree2(x1, x2, x3, root);
+			fitness += Math.pow((dataset.get(key) - treeVal), 2);
+			count++;
+		}
+		return Math.sqrt(fitness/count);
+	}
+	
 	/**
 	 * Evaluates the expression represented by the tree for a given value x using a
 	 * post-order traversal.
