@@ -23,7 +23,7 @@ public class Tree implements Comparable<Tree>{
 	int complexity;
 	private Random random = new Random();
 	private static String[] operators = { "+", "-", "/", "*", "s", "c", "e"}; // s: sin(n n), c: cos(n n); e: e^(n n)
-	private static String[] variables = {"x", "y", "z"};
+	private static String[] variables = {"x"};
 
 	/** Basic node class. The value can be a variable, number, or operator. **/
 	public static class Node {

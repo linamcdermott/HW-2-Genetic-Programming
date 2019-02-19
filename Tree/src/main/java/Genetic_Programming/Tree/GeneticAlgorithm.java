@@ -130,7 +130,7 @@ public class GeneticAlgorithm {
 //			System.out.println();
 //			bestTree.printExpression(bestTree.root);
 //			System.out.println();
-//			System.out.println(bestTree.fitness);
+			System.out.println(numIterations + "th iteration's fitness : " + bestTree.fitness);
 		}
 		bestTree.print();
 		System.out.println();
