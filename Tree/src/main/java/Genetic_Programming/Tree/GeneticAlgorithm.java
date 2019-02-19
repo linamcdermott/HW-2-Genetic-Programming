@@ -15,7 +15,7 @@ public class GeneticAlgorithm {
 		for (int i = 0; i < 100; i++) {
 			Tree current = new Tree(3);  // YJ: maybe this helps? for dataset2
 			current.fitness = current.calculateFitness(); // ****************** choose the dataset ***************************
-			System.out.println(current.fitness);
+			//System.out.println(current.fitness);
 			currentPop.add(current);
 		}
 	}
@@ -70,7 +70,7 @@ public class GeneticAlgorithm {
 					break;
 				}
 			}
-			System.out.println("Tree fitness: " + currentTree.fitness);
+			//System.out.println("Tree fitness: " + currentTree.fitness);
 		}
 		//System.out.print("Size of nextPop should be 100: " + nextPop.size() + "\n");
 		
@@ -123,12 +123,14 @@ public class GeneticAlgorithm {
 			
 			numIterations++;
 			currentPop = nextPop;
-			
-			bestTree.print();
-			System.out.println();
-			bestTree.printExpression(bestTree.root);
-			System.out.println();
-			System.out.println(bestTree.fitness);
+			if(numIterations == 1 || numIterations == 50 || numIterations == 100 || numIterations == 150) {
+				bestTree.print();
+			}
+//			bestTree.print();
+//			System.out.println();
+//			bestTree.printExpression(bestTree.root);
+//			System.out.println();
+//			System.out.println(bestTree.fitness);
 		}
 		bestTree.print();
 		System.out.println();
