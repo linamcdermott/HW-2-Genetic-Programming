@@ -22,7 +22,7 @@ public class Tree implements Comparable<Tree>{
 	double fitness;
 	int complexity;
 	private Random random = new Random();
-	private static String[] operators = { "+", "-", "/", "*" };
+	private static String[] operators = { "+", "-", "/", "*", "s", "c", "e"}; // s: sin(n n), c: cos(n n); e: e^(n n)
 	private static String[] variables = {"x", "y", "z"};
 
 	/** Basic node class. The value can be a variable, number, or operator. **/
@@ -178,14 +178,14 @@ public class Tree implements Comparable<Tree>{
 			double probablity = Math.random();
 			// About half of the time, leaf node should be a variable
 			
-			if (probablity > 0.5) {
-				// root.value = "x" //for dataset1
-				root.value = variables[random.nextInt(variables.length)]; // ******************choose the dataset ********************
+			if (probablity > 0.67) {
+				root.value = "x"; //for dataset1 & dataset3
+//				root.value = variables[random.nextInt(variables.length)]; // ******************choose the dataset ********************
 			}
 			// Other half of the time, leaf node should be an integer
 			else {
-				// dataset1 integer.toString(random.nextInt(9) + 1)	// ******************choose the dataset ********************
-				root.value = Double.toString(random.nextDouble()); // YJ: exclude 0 & normalized dataset2
+				root.value = Integer.toString(random.nextInt(9) + 1);	// ******************choose the dataset1 or 3 ********************
+//				root.value = Double.toString(random.nextDouble()); // YJ: exclude 0 & normalized dataset2
 			}
 		}
 		// If we're at an internal node
@@ -281,8 +281,8 @@ public class Tree implements Comparable<Tree>{
 				randNode.value = variables[random.nextInt(variables.length)];
 			}
 			else {
-				// dataset1 integer.toString(random.nextInt(9) + 1)        // ******************choose the dataset1 ********************
-				randNode.value = Double.toString(random.nextDouble()); // YJ: exclude 0 and normalized dataset2
+				randNode.value = Integer.toString(random.nextInt(9) + 1);       // ******************choose the dataset1 or 3 ********************
+				//randNode.value = Double.toString(random.nextDouble()); // YJ: exclude 0 and normalized dataset2
 			}
 		}
 		return copy;
@@ -292,8 +292,7 @@ public class Tree implements Comparable<Tree>{
 	public double calculateFitness() throws FileNotFoundException, IOException {
 		parser.csvParser();
 		
-		HashMap<Double, Double> dataset = parser.dataset1; // Dataset1
-		HashMap<Double, Double> dataset3 = parser.dataset3; //Dataset3
+		HashMap<Double, Double> dataset = parser.dataset3; // *************************************** Dataset3
 		
 		double fitness = 0;
 		for (Double key: dataset.keySet()) {
@@ -305,7 +304,7 @@ public class Tree implements Comparable<Tree>{
 
 	public double calculateFitness2() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2c; //  ****************choose Dataset2 or Dataset2b or dataset2c ****************
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2b; //  ****************choose Dataset2 or Dataset2b or dataset2c ****************
 		double fitness = 0;
 		int count = 0;
 		for (ArrayList<Double> key: dataset.keySet()) {
@@ -325,7 +324,7 @@ public class Tree implements Comparable<Tree>{
 	// Testing set (20%): Returns the root-mean-squared error
 	public double testFitness() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<Double, Double> dataset = parser.dataset1Test; // Dataset1 Test
+		HashMap<Double, Double> dataset = parser.dataset3Test; // ***************************** Dataset3 Test **************************
 		double fitness = 0;
 		for (Double key: dataset.keySet()) {
 			double treeVal = this.evaluateTree(key, root);
@@ -336,7 +335,7 @@ public class Tree implements Comparable<Tree>{
 	
 	public double testFitness2() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2cTest; // ******************** choose Dataset2Test or Dataset2bTest or dataset2cTest ********* 
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2bTest; // ******************** choose Dataset2Test or Dataset2bTest or dataset2cTest ********* 
 		double fitness = 0;
 		int count = 0;
 		for (ArrayList<Double> key: dataset.keySet()) {
@@ -364,7 +363,7 @@ public class Tree implements Comparable<Tree>{
 			return Double.parseDouble(currentNode.value);
 		} else {
 			String op = currentNode.value;
-			return evaluateExpression(x, op, String.valueOf(evaluateTree(x, currentNode.left)),
+			return evaluateExpression3(x, op, String.valueOf(evaluateTree(x, currentNode.left)), // ******************* dataset 3 ***************
 					String.valueOf(evaluateTree(x, currentNode.right)));
 		}
 	}
@@ -470,6 +469,53 @@ public class Tree implements Comparable<Tree>{
 			return num1 + num2;
 		} else if (op.equals("-")) {
 			return num1 - num2;
+		} else {
+			return 0;
+		}
+	}
+	
+	/**
+	 * Evaluates the expression given by any subtree.
+	 * 
+	 * @param x     the input x for the function.
+	 * @param op    the operator.
+	 * @param left  the left side of the expression.
+	 * @param right the right side of the expression.
+	 * @return the value calculated by the input expression.
+	 */
+	private double evaluateExpression3(double x, String op, String left, String right) {
+		double num1;
+		double num2;
+		// Check if either of the nodes are "x"; if so, substitute x-value.
+		if (left.equals("x")) {
+			num1 = x;
+		} else {
+			num1 = Double.parseDouble(left);
+		}
+		if (right.equals("x")) {
+			num2 = x;
+		} else {
+			num2 = Double.parseDouble(right);
+		}
+
+		if (op.equals("/")) {
+			// Can't divide by 0.
+			if (num2 == 0) {
+				return 1;
+			}
+			return num1 / num2;
+		} else if (op.equals("*")) {
+			return num1 * num2;
+		} else if (op.equals("+")) {
+			return num1 + num2;
+		} else if (op.equals("-")) {
+			return num1 - num2;
+		} else if (op.equals("s")) {
+			return Math.sin(num1 * num2);
+		} else if (op.equals("c")) {
+			return Math.cos(num1 * num2);
+		} else if (op.equals("e")) {
+			return Math.pow(Math.E, (num1 * num2));
 		} else {
 			return 0;
 		}

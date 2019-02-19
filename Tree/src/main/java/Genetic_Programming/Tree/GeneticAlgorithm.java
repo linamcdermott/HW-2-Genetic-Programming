@@ -13,9 +13,9 @@ public class GeneticAlgorithm {
 	
 	public static void generatePopulation() throws FileNotFoundException, IOException {
 		for (int i = 0; i < 100; i++) {
-			Tree current = new Tree(3);
-			current.fitness = current.calculateFitness2(); // ****************** choose the dataset ***************************
-			//System.out.println(current.fitness);
+			Tree current = new Tree(3);  // YJ: maybe this helps? for dataset2
+			current.fitness = current.calculateFitness(); // ****************** choose the dataset ***************************
+			System.out.println(current.fitness);
 			currentPop.add(current);
 		}
 	}
@@ -70,6 +70,7 @@ public class GeneticAlgorithm {
 					break;
 				}
 			}
+			System.out.println("Tree fitness: " + currentTree.fitness);
 		}
 		//System.out.print("Size of nextPop should be 100: " + nextPop.size() + "\n");
 		
@@ -82,7 +83,7 @@ public class GeneticAlgorithm {
 		int numIterations = 0;
 		Tree bestTree = new Tree();
 		
-		while (numIterations < 400) { //bestTree.fitness > 0.05
+		while (numIterations < 200) { //bestTree.fitness > 0.05
 			ArrayList<Tree> thisPop = new ArrayList<Tree>();
 			Collections.sort(currentPop);
 			//Check best tree of the current population and see if it is the best ever
@@ -105,7 +106,7 @@ public class GeneticAlgorithm {
 					if (Math.random() < 0.5) {
 						crossover = crossover.mutate();
 					}
-					crossover.fitness = crossover.calculateFitness2(); // *********************************** choose the dataset **********
+					crossover.fitness = crossover.calculateFitness(); // *********************************** choose the dataset **********
 					thisPop.add(crossover);
 				}
 				if (probability > 0.8 && probability <= 0.85) {
@@ -113,7 +114,7 @@ public class GeneticAlgorithm {
 				}
 				else {
 					Tree m = x.mutate();
-					m.fitness = m.calculateFitness2(); // ****************************************** choose the dataset **********
+					m.fitness = m.calculateFitness(); // ****************************************** choose the dataset **********
 					thisPop.add(m);
 				}
 			}
@@ -123,14 +124,11 @@ public class GeneticAlgorithm {
 			numIterations++;
 			currentPop = nextPop;
 			
-			//bestTree.print();
-//			System.out.println();
-//			bestTree.printExpression(bestTree.root);
-//			System.out.println();
-			if(numIterations == 1 || numIterations == 100 || numIterations == 200 || numIterations == 300) {
-				bestTree.print();
-			}
-			System.out.println(numIterations + "th generation fitness : " + bestTree.fitness);
+			bestTree.print();
+			System.out.println();
+			bestTree.printExpression(bestTree.root);
+			System.out.println();
+			System.out.println(bestTree.fitness);
 		}
 		bestTree.print();
 		System.out.println();
@@ -138,13 +136,14 @@ public class GeneticAlgorithm {
 		System.out.println();
 		System.out.println(bestTree.fitness);
 		System.out.println(numIterations);
+		System.out.println("Dataset - test set fitness: " + bestTree.testFitness()); // ****************************************** choose the dataset **********
 		return bestTree;
 	}
 	
 	public static double testGeneticAlgorithm() throws FileNotFoundException, IOException{
 		Tree bestTree = runGeneticAlgorithm();
-		System.out.println("Testing Genetic Algorithm's fitness: " + bestTree.testFitness2()); // ************* choose the dataset **********
-		return bestTree.testFitness2(); 					// ************************************** choose the dataset **********
+		System.out.println("Testing Genetic Algorithm's fitness: " + bestTree.testFitness()); // ************* choose the dataset **********
+		return bestTree.testFitness(); 					// ************************************** choose the dataset **********
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
