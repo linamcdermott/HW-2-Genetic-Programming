@@ -127,7 +127,7 @@ public class GeneticAlgorithm {
 //			System.out.println();
 //			bestTree.printExpression(bestTree.root);
 //			System.out.println();
-			if(numIterations == 100 || numIterations == 200 || numIterations == 300) {
+			if(numIterations == 1 || numIterations == 100 || numIterations == 200 || numIterations == 300) {
 				bestTree.print();
 			}
 			System.out.println(numIterations + "th generation fitness : " + bestTree.fitness);
