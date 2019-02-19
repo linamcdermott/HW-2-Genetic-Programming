@@ -9,8 +9,30 @@ import java.util.*;
 public class TestTree {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
+		
 		// TODO Auto-generated method stub
+		
 		Tree t = new Tree(3);
+		t.print();
+		t.printExpression(t.root);
+		System.out.println();
+		System.out.println(t.evaluateTree2(3, 2, 1, t.root));
+		System.out.println(t.calculateFitness2());
+		
+		parser.csvParser();
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2; // Dataset2
+		double fitness = 0;
+		int count = 0;
+		for (ArrayList<Double> key: dataset.keySet()) {
+			double x = key.get(0);
+			double y = key.get(1);
+			double z = key.get(2);
+			System.out.println("x1: " + x + " x2: " + y + " x3: " + z + " f(x1,x2,x3): " +  dataset.get(key));
+			//double treeVal = this.evaluateTree(key, root);
+			//fitness += Math.pow((dataset.get(key) - treeVal), 2);
+		}
+		
+		/**Tree t = new Tree(3);
 		t.printExpression(t.root);
 		System.out.println("");
 		Tree clone = t.clone();
@@ -45,7 +67,7 @@ public class TestTree {
 		}
 		
 		//Map<Tree, Double> scoredForest1 = sortByValue(scoredForest); 
-		
+		**/
 	}
 
 }
