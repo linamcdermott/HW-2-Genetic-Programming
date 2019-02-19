@@ -82,15 +82,15 @@ public class GeneticAlgorithm {
 		int numIterations = 0;
 		Tree bestTree = new Tree();
 		
-		while (numIterations < 200) { //bestTree.fitness > 0.05
+		while (numIterations < 400) { //bestTree.fitness > 0.05
 			ArrayList<Tree> thisPop = new ArrayList<Tree>();
 			Collections.sort(currentPop);
 			//Check best tree of the current population and see if it is the best ever
 			if (currentPop.get(0).fitness < bestTree.fitness) {
 				bestTree = currentPop.get(0);
-				bestTree.print();
-				System.out.println();
-				System.out.println(bestTree.fitness);
+				//bestTree.print();
+				//System.out.println();
+				//System.out.println(bestTree.fitness);
 			}
 			//Make next population
 			while (thisPop.size() < 201) {		
@@ -123,11 +123,14 @@ public class GeneticAlgorithm {
 			numIterations++;
 			currentPop = nextPop;
 			
-			bestTree.print();
-			System.out.println();
-			bestTree.printExpression(bestTree.root);
-			System.out.println();
-			System.out.println(bestTree.fitness);
+			//bestTree.print();
+//			System.out.println();
+//			bestTree.printExpression(bestTree.root);
+//			System.out.println();
+			if(numIterations == 100 || numIterations == 200 || numIterations == 300) {
+				bestTree.print();
+			}
+			System.out.println(numIterations + "th generation fitness : " + bestTree.fitness);
 		}
 		bestTree.print();
 		System.out.println();
