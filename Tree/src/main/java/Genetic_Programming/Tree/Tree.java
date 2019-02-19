@@ -22,21 +22,7 @@ public class Tree implements Comparable<Tree>{
 
 		public Node left;
 		public Node right;
-		public Node parent;
-		public boolean isLeft;
 		public String value;
-
-		// Has not used this yet
-		public ArrayList<Node> getChildren() {
-			ArrayList<Node> childNodes = new ArrayList<>();
-			if (this.left != null) {
-				childNodes.add(left);
-			}
-			if (this.right != null) {
-				childNodes.add(right);
-			}
-			return childNodes;
-		}
 	}
 	
 	// Return a random node to be mutated or cross over
@@ -192,7 +178,7 @@ public class Tree implements Comparable<Tree>{
 			}
 			// Other half of the time, leaf node should be an integer
 			else {
-				root.value = Integer.toString(random.nextInt(10)); // YJ: +/-5 for dataset1
+				root.value = Integer.toString(random.nextInt(9) + 1); // YJ: exclude 0
 			}
 		}
 		// If we're at an internal node
@@ -294,10 +280,27 @@ public class Tree implements Comparable<Tree>{
 		return copy;
 	}
 	
-	// Returns the root-mean-squared error
+	// Testing set (20%): Returns the root-mean-squared error
+	public double testFitness() throws FileNotFoundException, IOException {
+		parser.csvParser();
+		HashMap<Double, Double> dataset = parser.dataset1Test; // Dataset1 Test
+		double fitness = 0;
+		for (Double key: dataset.keySet()) {
+			double treeVal = this.evaluateTree(key, root);
+			fitness += Math.pow((dataset.get(key) - treeVal), 2);
+		}
+		return Math.sqrt(fitness/(dataset.keySet().size()));
+	}
+	
+	// Training set (80%): Returns the root-mean-squared error
 	public double calculateFitness() throws FileNotFoundException, IOException {
 		parser.csvParser();
+		
 		HashMap<Double, Double> dataset = parser.dataset1; // Dataset1
+		HashMap<ArrayList<Double>, Double> dataset2 = parser.dataset2; //Dataset2
+		HashMap<Double, Double> dataset3 = parser.dataset3; //Dataset2
+		
+		
 		double fitness = 0;
 		for (Double key: dataset.keySet()) {
 			double treeVal = this.evaluateTree(key, root);

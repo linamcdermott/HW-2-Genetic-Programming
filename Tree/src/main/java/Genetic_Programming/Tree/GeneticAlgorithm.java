@@ -129,43 +129,6 @@ public class GeneticAlgorithm {
 			
 			ArrayList<Tree> nextPop = complexityFilter(thisPop);
 			
-			/**double survivalChance = 0.99;
-			int reproductionSize = 0;
-			ArrayList<Tree> mostFitted = new ArrayList<Tree>();
-			for(int reproduction = 0; reproduction < currentForest.size(); reproduction++) {
-				if(reproductionSize > 0.2 * currentForest.size()) {
-					break;
-				}
-				// Change this later
-				if(random.nextDouble() <= Math.pow(survivalChance, reproduction)) {
-					Tree picked = currentForest.poll();
-					nextForest.add(picked); 
-					mostFitted.add(picked);
-					reproductionSize++;
-				}
-			}
-			
-			int numChildren = 0;
-			int numMutations = 0;
-			while (nextForest.size() < 100) {
-				if (nextForest.size() == 100) {
-					break;
-				}
-				x = mostFitted.get(random.nextInt(mostFitted.size()));
-				y = mostFitted.get(random.nextInt(mostFitted.size()));
-				Tree child = x.crossover(y);
-				child.fitness = child.calculateFitness();
-				nextForest.add(child);
-				numChildren++;
-				if (random.nextDouble() < 0.1) {
-					Tree mutated = child.mutate();
-					mutated.fitness = mutated.calculateFitness();
-					nextForest.add(mutated);
-					numMutations++;
-				}
-			}**/
-			//System.out.println("Next Forest size should be 100: " + nextForest.size());
-			//System.out.println("Num children: " + numChildren + "; Num Mutations: " + numMutations);
 			numIterations++;
 			currentPop = nextPop;
 			
@@ -184,7 +147,13 @@ public class GeneticAlgorithm {
 		return bestTree;
 	}
 	
+	public static double testGeneticAlgorithm() throws FileNotFoundException, IOException{
+		Tree bestTree = runGeneticAlgorithm();
+		System.out.println("Testing Genetic Algorithm's fitness: " + bestTree.testFitness());
+		return bestTree.testFitness();
+	}
+	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		runGeneticAlgorithm();
+		testGeneticAlgorithm();
 	}
 }
