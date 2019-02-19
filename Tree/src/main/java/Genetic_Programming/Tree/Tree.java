@@ -178,7 +178,7 @@ public class Tree implements Comparable<Tree>{
 			double probablity = Math.random();
 			// About half of the time, leaf node should be a variable
 			
-			if (probablity > 0.5) {
+			if (probablity > 0.67) {
 				// root.value = "x" //for dataset1
 				root.value = variables[random.nextInt(variables.length)]; // ******************choose the dataset ********************
 			}

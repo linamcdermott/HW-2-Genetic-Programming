@@ -82,7 +82,7 @@ public class GeneticAlgorithm {
 		int numIterations = 0;
 		Tree bestTree = new Tree();
 		
-		while (numIterations < 400) { //bestTree.fitness > 0.05
+		while (numIterations < 200) { //bestTree.fitness > 0.05
 			ArrayList<Tree> thisPop = new ArrayList<Tree>();
 			Collections.sort(currentPop);
 			//Check best tree of the current population and see if it is the best ever
