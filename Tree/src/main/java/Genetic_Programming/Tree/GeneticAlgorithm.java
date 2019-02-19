@@ -103,7 +103,7 @@ public class GeneticAlgorithm {
 					break;
 				}
 								
-				//90% chance of crossover, 10% pass on no mutation, 10% pass on w/ mutation
+				//80% chance of crossover, 10% pass on no mutation, 10% pass on w/ mutation
 				Tree x = getRandomTree(); 
 				
 				double probability = Math.random();
