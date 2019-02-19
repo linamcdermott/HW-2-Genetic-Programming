@@ -14,7 +14,7 @@ public class GeneticAlgorithm {
 	public static void generatePopulation() throws FileNotFoundException, IOException {
 		for (int i = 0; i < 100; i++) {
 			Tree current = new Tree(3);
-			current.fitness = current.calculateFitness2(); // ************* choose the dataset **********
+			current.fitness = current.calculateFitness2(); // ****************** choose the dataset ***************************
 			//System.out.println(current.fitness);
 			currentPop.add(current);
 		}
@@ -82,7 +82,7 @@ public class GeneticAlgorithm {
 		int numIterations = 0;
 		Tree bestTree = new Tree();
 		
-		while (numIterations < 100) { //bestTree.fitness > 0.05
+		while (numIterations < 200) { //bestTree.fitness > 0.05
 			ArrayList<Tree> thisPop = new ArrayList<Tree>();
 			Collections.sort(currentPop);
 			//Check best tree of the current population and see if it is the best ever
@@ -105,7 +105,7 @@ public class GeneticAlgorithm {
 					if (Math.random() < 0.5) {
 						crossover = crossover.mutate();
 					}
-					crossover.fitness = crossover.calculateFitness2(); // ************* choose the dataset **********
+					crossover.fitness = crossover.calculateFitness2(); // *********************************** choose the dataset **********
 					thisPop.add(crossover);
 				}
 				if (probability > 0.8 && probability <= 0.85) {
@@ -113,7 +113,7 @@ public class GeneticAlgorithm {
 				}
 				else {
 					Tree m = x.mutate();
-					m.fitness = m.calculateFitness2(); // ************* choose the dataset **********
+					m.fitness = m.calculateFitness2(); // ****************************************** choose the dataset **********
 					thisPop.add(m);
 				}
 			}
@@ -141,7 +141,7 @@ public class GeneticAlgorithm {
 	public static double testGeneticAlgorithm() throws FileNotFoundException, IOException{
 		Tree bestTree = runGeneticAlgorithm();
 		System.out.println("Testing Genetic Algorithm's fitness: " + bestTree.testFitness2()); // ************* choose the dataset **********
-		return bestTree.testFitness2(); 					// ************* choose the dataset **********
+		return bestTree.testFitness2(); 					// ************************************** choose the dataset **********
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {

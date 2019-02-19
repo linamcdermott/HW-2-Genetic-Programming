@@ -305,7 +305,7 @@ public class Tree implements Comparable<Tree>{
 
 	public double calculateFitness2() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2b; //  ****************choose Dataset2 or Dataset2b ****************
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2c; //  ****************choose Dataset2 or Dataset2b or dataset2c ****************
 		double fitness = 0;
 		int count = 0;
 		for (ArrayList<Double> key: dataset.keySet()) {
@@ -336,7 +336,7 @@ public class Tree implements Comparable<Tree>{
 	
 	public double testFitness2() throws FileNotFoundException, IOException {
 		parser.csvParser();
-		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2bTest; // ******************** choose Dataset2Test or Dataset2bTest ********* 
+		HashMap<ArrayList<Double>, Double> dataset = parser.dataset2cTest; // ******************** choose Dataset2Test or Dataset2bTest or dataset2cTest ********* 
 		double fitness = 0;
 		int count = 0;
 		for (ArrayList<Double> key: dataset.keySet()) {
