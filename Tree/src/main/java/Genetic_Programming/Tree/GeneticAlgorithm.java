@@ -12,6 +12,14 @@ public class GeneticAlgorithm {
 	//static PriorityQueue<Tree> currentForest = new PriorityQueue<Tree>();
 	static ArrayList<Tree> currentPop = new ArrayList<Tree>();
 	
+	public static double popAvgFitness() {
+		double sum = 0;
+		for (int i = 0; i < currentPop.size(); i++) {
+			sum += currentPop.get(i).fitness;
+		}
+		return sum/currentPop.size();
+	}
+	
 	public static void generatePopulation() throws FileNotFoundException, IOException {
 		for (int i = 0; i < 100; i++) {
 			Tree current = new Tree(3);
@@ -87,7 +95,7 @@ public class GeneticAlgorithm {
 		boolean done = false;
 		Tree bestTree = new Tree();
 		
-		while (bestTree.fitness > 0.05) {
+		while (bestTree.fitness > 0.03) {
 			ArrayList<Tree> thisPop = new ArrayList<Tree>();
 			Collections.sort(currentPop);
 			//Check best tree of the current population and see if it is the best ever
@@ -137,13 +145,15 @@ public class GeneticAlgorithm {
 			bestTree.printExpression(bestTree.root);
 			System.out.println();
 			System.out.println(bestTree.fitness);
+			System.out.println();
+			System.out.println(popAvgFitness());
 		}
-		bestTree.print();
-		System.out.println();
-		bestTree.printExpression(bestTree.root);
-		System.out.println();
-		System.out.println(bestTree.fitness);
-		System.out.println(numIterations);
+		//bestTree.print();
+		//System.out.println();
+		//bestTree.printExpression(bestTree.root);
+		//System.out.println();
+		//System.out.println(bestTree.fitness);
+		//System.out.println(numIterations);
 		return bestTree;
 	}
 	
